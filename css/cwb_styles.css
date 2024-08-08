@@ -1,0 +1,88 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: rgb(231, 236, 230);
+}
+
+#heading-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0 0 0;
+    background-color: hsl(190, 4%, 33%);
+    max-width: 1600px;
+    margin: 20px auto 0px;
+    height: 60px;
+}
+
+#heading-container h1 {
+    margin: 0;
+}
+
+#heading-container .by-text {
+    margin-left: 10px;
+    font-size: 1em;
+    color: #d3d3d3;
+}
+
+#container {
+    max-width: 1600px;
+    margin: 0 auto;
+    margin-top: 0px;
+    padding: 0px;
+}
+
+h1 {
+    font-size: 3em;
+    color: #e2e2e2;
+    text-align: center;
+    margin-bottom: 20px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+p {
+    line-height: 1.6;
+    color: #ff9a3c;
+    margin-bottom: 20px;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 660px;
+    border: 3px solid #474747;
+    background-color: white;
+}
+
+#toolbar {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#toolbar button {
+    background-color: #007bff; /* Sets the button background color to a blue shade */
+    color: #fff; /* Sets the text color of the button to white */
+    border: none; /* Removes the default border */
+    padding: 10px 20px; /* Adds 10 pixels of padding on top and bottom, 20 pixels on left and right */
+    margin: 5px; /* Adds 5 pixels of space around each button */
+    font-size: 16px; /* Sets the font size to 16 pixels */
+    cursor: pointer; /* Changes the cursor to a pointer when hovering over the button */
+    border-radius: 5px; /* Rounds the corners of the button with a 5-pixel radius */
+    transition: background-color 0.3s; /* Adds a smooth transition effect for background color changes */
+}
+
+
+#toolbar button:hover {
+    background-color: #0056b3; /* Changes the background color to a darker blue on hover */
+}
+
+/* Styling for the footer */
+footer {
+    text-align: center; /* Centers the text inside the footer */
+    margin-top: 40px; /* Adds 40 pixels of space above the footer */
+    color: #999; /* Sets the text color to a light gray */
+}
