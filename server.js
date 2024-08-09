@@ -25,6 +25,10 @@ io.on("connection", (socket) => {
         socket.broadcast.emit("draw", data)
     });
 
+    //listen for user clearing whiteboard
+    socket.on("clear", () => {
+    socket.broadcast.emit("clear")
+    });
 
     socket.on("disconnect", () => {
         console.log("User disconnected");
