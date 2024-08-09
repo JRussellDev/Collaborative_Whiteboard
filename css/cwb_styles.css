@@ -16,7 +16,7 @@ body {
     background-color: hsl(190, 4%, 33%);
     max-width: 1600px;
     margin: 20px auto 0px;
-    height: 60px;
+    height: 80px;
 }
 
 #heading-container h1 {
@@ -59,22 +59,31 @@ canvas {
 }
 
 #toolbar {
+    display: flex;
     margin-top: 20px;
     text-align: center;
+    justify-content: left;
+    align-items: center; /* Vertically center the items */
 }
 
-#toolbar button {
+#toolbar select {
     background-color: #007bff; /* Sets the button background color to a blue shade */
     color: #fff; /* Sets the text color of the button to white */
     border: none; /* Removes the default border */
     padding: 10px 20px; /* Adds 10 pixels of padding on top and bottom, 20 pixels on left and right */
-    margin: 5px; /* Adds 5 pixels of space around each button */
+    margin-right: 35px; /* Adds 5 pixels of space around each button */
     font-size: 16px; /* Sets the font size to 16 pixels */
     cursor: pointer; /* Changes the cursor to a pointer when hovering over the button */
     border-radius: 5px; /* Rounds the corners of the button with a 5-pixel radius */
     transition: background-color 0.3s; /* Adds a smooth transition effect for background color changes */
 }
 
+.tool-group label  {
+    font-family: 'Courier New', Courier, monospace;
+    margin-bottom: 5px;
+    margin-right: 5px;
+    font-size: 1em;
+}
 
 #toolbar button:hover {
     background-color: #0056b3; /* Changes the background color to a darker blue on hover */

@@ -18,6 +18,18 @@
         <canvas id="whiteboard"></canvas><!-- Canvas where users draw -->
 
         <div id="toolbar">
+            <div class="tool-group">
+                <label for="brushSize">Brush Size:</label>
+                <select id="brushSize">
+                    <option value="2">Small</option>
+                    <option value="5">Medium</option>
+                    <option value="10">Large</option>
+                </select>
+            </div>
+            <div class="tool-group">
+                <label for="colorPicker">Color:</label>
+                <input type="color" id="colorPicker" value="#000000">
+            </div>
         </div>
     </div>
     <script src="js/cwb_app.js"> </script>  <!-- Link to Javascript -->
