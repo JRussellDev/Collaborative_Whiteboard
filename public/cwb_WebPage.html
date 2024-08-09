@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collaborative Whiteboard</title>
+
+    <link rel="stylesheet" href="css/cwb_styles.css"> <!-- Link to CSS -->
+</head>
+
+<body>
+    <div id="heading-container">
+        <div class="left-heading">
+            <h2>Connected Users:</h2>
+        </div>
+        <div class="center-heading">
+            <h1>Collaborative Whiteboard</h1>
+            
+        </div>
+        <div class="right-heading"> 
+            <span class="by-text">By Jamie Russell</span>
+        </div>
+    </div>
+
+    <div id="container">
+        <canvas id="whiteboard"></canvas><!-- Canvas where users draw -->
+
+        <div id="toolbar">
+            <div class="tool-group">
+                <label for="brushSize">Brush Size:</label>
+                <select id="brushSize">
+                    <option value="1">Small</option>
+                    <option value="3">Medium</option>
+                    <option value="8">Large</option>
+                    <option value="12">THICK</option>
+                </select>
+            </div>
+            <div class="tool-group">
+                <label id="color-label" for="colorPicker">Color:</label>
+                <input type="color" id="colorPicker" value="#000000">
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Socket.IO client library -->
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script src="js/cwb_app.js"> </script>  <!-- Link to Javascript -->
+</body>
+</html>
