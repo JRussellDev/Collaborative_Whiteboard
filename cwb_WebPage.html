@@ -10,8 +10,16 @@
 
 <body>
     <div id="heading-container">
-        <h1>Collaborative Whiteboard</h1> 
-        <span class="by-text">By Jamie Russell</span>
+        <div class="left-heading">
+            <h2>Connected Users:</h2>
+        </div>
+        <div class="center-heading">
+            <h1>Collaborative Whiteboard</h1>
+            
+        </div>
+        <div class="right-heading"> 
+            <span class="by-text">By Jamie Russell</span>
+        </div>
     </div>
 
     <div id="container">
@@ -21,13 +29,14 @@
             <div class="tool-group">
                 <label for="brushSize">Brush Size:</label>
                 <select id="brushSize">
-                    <option value="2">Small</option>
-                    <option value="5">Medium</option>
-                    <option value="10">Large</option>
+                    <option value="1">Small</option>
+                    <option value="3">Medium</option>
+                    <option value="8">Large</option>
+                    <option value="12">THICK</option>
                 </select>
             </div>
             <div class="tool-group">
-                <label for="colorPicker">Color:</label>
+                <label id="color-label" for="colorPicker">Color:</label>
                 <input type="color" id="colorPicker" value="#000000">
             </div>
         </div>

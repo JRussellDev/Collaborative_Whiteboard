@@ -1,7 +1,7 @@
 const canvas = document.getElementById("whiteboard");
 const context = canvas.getContext("2d");
 let brushColor = document.getElementById("colorPicker");
-
+const brushSizePicker = document.getElementById("brushSize")
 canvas.width = canvas.clientWidth;  // Set the drawing width to match the display width
 canvas.height = 660;  // Set the drawing height
 
@@ -9,6 +9,14 @@ canvas.height = 660;  // Set the drawing height
 let isDrawing = false;
 let lastX = 0;
 let lastY = 0;
+
+let brushSize = 2;
+
+function updateBrushSize() {
+    brushSize = parseInt(brushSizePicker.value, 10);
+    console.log("brush size is now" + brushSize)
+}
+
 
 canvas.addEventListener('mousedown', (e) => {     // When mouse clicked over the canvas....
     
@@ -36,7 +44,7 @@ canvas.addEventListener('mousemove', (e) => {
     
     //Set drawing aesthetics
     context.strokeStyle = brushColor.value;
-    context.lineWidth = 2;
+    context.lineWidth = brushSize;
     context.lineJoin = "round";
     context.lineCap = "round";
 
@@ -50,6 +58,8 @@ canvas.addEventListener('mousemove', (e) => {
     [lastX, lastY] = [e.offsetX, e.offsetY];
     console.log("Should be drawing");
 });
+
+brushSizePicker.addEventListener('change', updateBrushSize);
 
 canvas.addEventListener("mouseup", () => isDrawing = false); // When mouse is lifted, stop ability to draw
 canvas.addEventListener("mouseout", () => isDrawing = false); // When mouse leaves the canvas, stop ability to draw
