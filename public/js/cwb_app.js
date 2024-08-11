@@ -1,8 +1,13 @@
 // Connect to the Socket.IO server
 const socket = io();
 
+socket.on("userCount", (count) =>{
+document.getElementById("userCountDisplay").textContent = `Users Connected: ${count}`;
+});
+
 const canvas = document.getElementById("whiteboard");
 const context = canvas.getContext("2d");
+
 let brushColor = document.getElementById("colorPicker");
 const brushSizePicker = document.getElementById("brushSize")
 canvas.width = canvas.clientWidth;  // Set the drawing width to match the display width
@@ -11,8 +16,8 @@ canvas.height = 660;  // Set the drawing height
 let isDrawing = false; // Bool to check if user is drawing/able to draw
 let lastX = 0;
 let lastY = 0;
-
 let brushSize = 2;
+
 
 context.lineJoin = "round";
 context.lineCap = "round";
@@ -39,7 +44,9 @@ canvas.addEventListener('mousedown', (e) => {     // When mouse clicked over the
         context.lineTo(e.offsetX, e.offsetY);
         context.stroke();
 
-        // Emit drawing data to the server
+        [lastX, lastY] = [e.offsetX, e.offsetY];
+
+        // Emit dot drawing data to the server
         socket.emit('draw', {
         x0: lastX,
         y0: lastY,

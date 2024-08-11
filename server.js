@@ -8,6 +8,8 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
+let userCount = 0; // Initialize the user count
+
 app.use(express.static("public"));
 
 // Serve the default HTML file
@@ -16,9 +18,9 @@ app.get('/', (req, res) => {
 });
 
 io.on("connection", (socket) => {
-
-
+    userCount++; // Increment user count
     console.log("User has connected");
+    io.emit("userCount", userCount); // Broadcast the updated user count to all clients
 
     //listen for user drawing
     socket.on("draw", (data) => {
@@ -32,6 +34,8 @@ io.on("connection", (socket) => {
 
     socket.on("disconnect", () => {
         console.log("User disconnected");
+        userCount--; // Decrement user count 
+        io.emit("userCount", userCount); // Broadcast the updated user count to all clients
     });
 
 });
