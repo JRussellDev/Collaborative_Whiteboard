@@ -9,6 +9,7 @@ const server = http.createServer(app);
 const io = socketIo(server);
 
 let userCount = 0; // Initialize the user count
+const users = {};
 
 app.use(express.static("public"));
 
@@ -18,9 +19,20 @@ app.get('/', (req, res) => {
 });
 
 io.on("connection", (socket) => {
-    userCount++; // Increment user count
     console.log("User has connected");
-    io.emit("userCount", userCount); // Broadcast the updated user count to all clients
+
+    userCount++; // Increment user count
+    users[socket.id] = {};
+    io.emit("userConnected", { id: socket.id, userCount: userCount });
+    
+    for (let id in users){
+        if (id !== socket.id){
+            socket.emit("userConnected", { id, userCount: userCount });
+        }
+    }
+
+    // Store user data
+    users[socket.id] = {}; // Use an empty object to represent each user
 
     //listen for user drawing
     socket.on("draw", (data) => {
@@ -35,10 +47,28 @@ io.on("connection", (socket) => {
     socket.on("disconnect", () => {
         console.log("User disconnected");
         userCount--; // Decrement user count 
-        io.emit("userCount", userCount); // Broadcast the updated user count to all clients
+       
+        //Alert that user has left for functionality
+        socket.broadcast.emit('userDisconnected', { id: socket.id, userCount: userCount});
+
+        // Remove user data
+        delete users[socket.id];
     });
 
-});
+
+    //Update other users mouse icon
+    socket.on('mouseMove', (data) => {
+        socket.broadcast.emit('mouseUpdate', {
+            id: socket.id,
+            x: data.x,
+            y: data.y
+        });
+    });
+
+
+}); 
+
+
 
 // Define the port to listen on
 const PORT = process.env.PORT || 3000;
@@ -46,3 +76,5 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
+
+

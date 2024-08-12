@@ -1,12 +1,11 @@
 // Connect to the Socket.IO server
 const socket = io();
 
-socket.on("userCount", (count) =>{
-document.getElementById("userCountDisplay").textContent = `Users Connected: ${count}`;
-});
-
 const canvas = document.getElementById("whiteboard");
 const context = canvas.getContext("2d");
+
+const drawBtn = document.getElementById("draw-button");
+const erasBtn = document.getElementById("erase-button");
 
 let brushColor = document.getElementById("colorPicker");
 const brushSizePicker = document.getElementById("brushSize")
@@ -18,6 +17,9 @@ let lastX = 0;
 let lastY = 0;
 let brushSize = 2;
 
+let isErasing = false;
+let lastBrushColour;
+const users = {}; // Store other mice positions
 
 context.lineJoin = "round";
 context.lineCap = "round";
@@ -27,6 +29,22 @@ function updateBrushSize() {
     console.log("brush size is now" + brushSize)
 }
 
+
+function enableEraseMode() {
+    
+    if(!isErasing)
+    {
+        lastBrushColour = brushColor.value
+        brushColor.value = white;
+        erasBtn.style.borderColor = green;
+        isErasing = true;
+    }
+    else {
+    isErasing = false;
+    brushColor.value = lastBrushColour;
+    }
+
+}
 
 canvas.addEventListener('mousedown', (e) => {     // When mouse clicked over the canvas....
     
@@ -64,12 +82,21 @@ canvas.addEventListener('mousedown', (e) => {     // When mouse clicked over the
 });
 
 canvas.addEventListener('mousemove', (e) => {
+            
+    //Transmit mouse positions whenever mouse is moved
+    socket.emit('mouseMove', {
+        x: e.offsetX,
+        y: e.offsetY
+    });
+
     if(!isDrawing) return; // Only draw if mouse is down
-    
+
     //Set drawing aesthetics
     context.strokeStyle = brushColor.value;
     context.lineWidth = brushSize;
+  
 
+  
     // Draw lines on own whiteboard
     socket.emit('draw', {       // Emit (send) drawing data
         x0: lastX,
@@ -81,24 +108,34 @@ canvas.addEventListener('mousemove', (e) => {
 
     });
 
+
+    
+    
     // Draw a dot when mouse clicks to enable dot drawing
     context.beginPath();
     context.moveTo(lastX, lastY);
     context.lineTo(e.offsetX, e.offsetY);
     context.stroke();
-                
+   
     // Update last mouse position
     [lastX, lastY] = [e.offsetX, e.offsetY];
     console.log("Should be drawing");
 });
 
+
 brushSizePicker.addEventListener('change', updateBrushSize); // When changing brush sizes, run update brush function
+
 
 canvas.addEventListener("mouseup", () => isDrawing = false); // When mouse is lifted, stop ability to draw
 canvas.addEventListener("mouseout", () => isDrawing = false); // When mouse leaves the canvas, stop ability to draw
 
+drawBtn.addEventListener("click", enableDrawMode())
+eraseBtn.addEventListener("click", enableEraseMode())
+
 // Prevent the context menu from appearing when right clicking
 canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+
+
 
 // Listen for drawing data from other clients
 socket.on('draw', (data) => {
@@ -114,6 +151,52 @@ socket.on('draw', (data) => {
     context.stroke();
 });
 
+
 socket.on("clear", () => { // When emitted "clear" function through server
     context.clearRect(0, 0, canvas.width, canvas.height); // clear the canvas
+});
+
+
+
+socket.on('mouseUpdate', (data) => {
+
+    const mouseElement = users[data.id];
+
+    if(mouseElement) {
+        mouseElement.style.left = `${data.x + 171}px`; // Set clone mouse positions and fix offset
+        mouseElement.style.top = `${data.y + 110}px`; 
+    }
+
+});
+
+
+socket.on('userConnected', (data) => {
+    const {id, userCount } = data;
+    document.getElementById("userCountDisplay").textContent = `Users Connected: ${userCount}`;
+
+    if(!users[data.id]) // Ensure not creating mouse for own user
+    {
+    // Create new mouse element for new user
+    const mouseElement = document.createElement('div');
+    mouseElement.className = 'mouse-icon';
+    document.body.appendChild(mouseElement);
+    mouseElement.id = `mouseElement-${data.id}`;
+    mouseElement.style.height = '24px';
+    mouseElement.style.width = '24px';
+    users[data.id] = mouseElement;
+    console.log(`Added new mouse for id: ${data.id}`)  
+    }
+
+
+});
+
+// Remove the mouse icon when a user disconnects
+socket.on('userDisconnected', (data) => {
+    const {id, userCount } = data;
+    document.getElementById("userCountDisplay").textContent = `Users Connected: ${userCount}`;
+    const mouseElement = users[data.id];
+    if (mouseElement) {
+        mouseElement.remove();
+        delete users[data.id];
+    }
 });

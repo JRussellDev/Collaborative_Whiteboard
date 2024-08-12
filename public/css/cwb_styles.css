@@ -11,6 +11,9 @@ body {
     background-position: center; /* Centers the image in the viewport */
     background-repeat: no-repeat; /* Prevents the image from repeating */
     background-attachment: fixed; /* Makes the background image fixed in place */
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
 }
 #heading-container {
     display: flex;
@@ -53,6 +56,7 @@ body {
     margin: 0 auto;
     margin-top: 0px;
     padding: 0px;
+    position: relative;
     
 }
 
@@ -124,9 +128,27 @@ canvas {
     background-color: #91c6ff; /* Changes the background color to a darker blue on hover */
 }
 
+.draw-button {
+    height: 50px;
+}
+
+.eraser-button{
+    height: 50px;
+}
+
 /* Styling for the footer */
 footer {
     text-align: center; /* Centers the text inside the footer */
     margin-top: 40px; /* Adds 40 pixels of space above the footer */
     color: #999; /* Sets the text color to a light gray */
+}
+
+.mouse-icon {
+    position: absolute;
+    background: url('../images/mouseimg.png') no-repeat center center;
+    background-size: contain; /* Adjust as needed: 'cover', 'contain', or specific size */
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+
 }
