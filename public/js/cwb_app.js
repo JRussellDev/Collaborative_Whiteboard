@@ -4,10 +4,10 @@ const socket = io();
 const canvas = document.getElementById("whiteboard");
 const context = canvas.getContext("2d");
 
-const drawBtn = document.getElementById("draw-button");
-const erasBtn = document.getElementById("erase-button");
+const eraseBtn = document.getElementById("erase-button");
 
 let brushColor = document.getElementById("colorPicker");
+brushColor.value = '#000000';
 const brushSizePicker = document.getElementById("brushSize")
 canvas.width = canvas.clientWidth;  // Set the drawing width to match the display width
 canvas.height = 660;  // Set the drawing height
@@ -19,6 +19,7 @@ let brushSize = 2;
 
 let isErasing = false;
 let lastBrushColour;
+let lastBrushWidth;
 const users = {}; // Store other mice positions
 
 context.lineJoin = "round";
@@ -31,19 +32,21 @@ function updateBrushSize() {
 
 
 function enableEraseMode() {
-    
-    if(!isErasing)
-    {
-        lastBrushColour = brushColor.value
-        brushColor.value = white;
-        erasBtn.style.borderColor = green;
+    console.log("CLICKED ERASER")
+    console.log(isErasing);
+    if (!isErasing) {
+        lastBrushWidth = brushSize
+        context.lineWidth = 30;
+        lastBrushColor = brushColor.value;
+        brushColor.value = '#FFFFFF';  // Use 'white' directly
+        eraseBtn.style.borderColor = 'green';  // Use 'green' directly
         isErasing = true;
+    } else {
+        isErasing = false;
+        brushSize = lastBrushWidth;
+        brushColor.value = lastBrushColor;
+        eraseBtn.style.borderColor = 'black';  // Use 'black' directly
     }
-    else {
-    isErasing = false;
-    brushColor.value = lastBrushColour;
-    }
-
 }
 
 canvas.addEventListener('mousedown', (e) => {     // When mouse clicked over the canvas....
@@ -129,8 +132,7 @@ brushSizePicker.addEventListener('change', updateBrushSize); // When changing br
 canvas.addEventListener("mouseup", () => isDrawing = false); // When mouse is lifted, stop ability to draw
 canvas.addEventListener("mouseout", () => isDrawing = false); // When mouse leaves the canvas, stop ability to draw
 
-drawBtn.addEventListener("click", enableDrawMode())
-eraseBtn.addEventListener("click", enableEraseMode())
+eraseBtn.addEventListener("click", enableEraseMode);
 
 // Prevent the context menu from appearing when right clicking
 canvas.addEventListener('contextmenu', (e) => e.preventDefault());
