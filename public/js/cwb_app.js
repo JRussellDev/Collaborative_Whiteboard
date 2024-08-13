@@ -177,7 +177,7 @@ socket.on('mouseUpdate', (data) => {
     const mouseElement = users[data.id];
 
     if(mouseElement) {
-        mouseElement.style.left = `${data.x + 282}px`; // Set clone mouse positions and fix offset
+        mouseElement.style.left = `${data.x + 282}px`; // Set clone mouse positions and fix offs et
         mouseElement.style.top = `${data.y + 112}px`; 
     }
 
@@ -207,6 +207,7 @@ socket.on('userConnected', (data) => {
 // Remove the mouse icon when a user disconnects
 socket.on('userDisconnected', (data) => {
     const {id, userCount } = data;
+
     document.getElementById("userCountDisplay").textContent = `Users Connected: ${userCount}`;
     const mouseElement = users[data.id];
     if (mouseElement) {
@@ -214,16 +215,25 @@ socket.on('userDisconnected', (data) => {
         delete users[data.id];
     }
 
-    // Delete users name lsiting
+    // Remove the user's name listing
+    const userListing = document.getElementById(`user-${id}`);
+    if (userListing) {
+        userListing.remove(); // Correctly remove the element from the DOM
+    }
 });
 
-socket.on("addUserListing", (data) => {
-    userID = data.id;
-    userName = data.name;
 
-    console.log("tried to add user listing");
-    //Add user listing element
-    const userListing = document.createElement('div');
-    userListing.textContent = userName;
-    document.getElementById("users-container").appendChild(userListing);
+ // Listen for user listing updates
+ socket.on("addUserListing", (data) => {
+    const { id, name } = data;
+    console.log('Received user listing:', data);
+        // Add or update user name in the list
+        let userItem = document.getElementById(`user-${id}`);
+        if (!userItem) {
+            userItem = document.createElement("div");
+            userItem.className = "userItem";
+            userItem.id = `user-${id}`;
+            document.getElementById("users-container").appendChild(userItem);
+        }
+        userItem.textContent = name;
 });

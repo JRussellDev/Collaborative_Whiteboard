@@ -24,13 +24,33 @@ io.on("connection", (socket) => {
 
     userCount++; // Increment user count
     users[socket.id] = {};
+    
     io.emit("userConnected", { id: socket.id, userCount: userCount });
     
     for (let id in users){
         if (id !== socket.id){
+            // ALL existing mice
             socket.emit("userConnected", { id, userCount: userCount });
+            // ALL existing user names to add to list
+            socket.emit("addUserListing", {
+                id: id,
+                name: users[id].name
+            });
         }
     }
+
+        // Notify all clients about the new user
+        socket.on("userNameAdded", (data) => {
+            const userName = data.name;
+            users[socket.id].name = userName;
+    
+            // Notify all clients about the new user
+            io.emit("addUserListing", {
+                id: socket.id,
+                name: userName
+            });
+        });
+
 
     // Store user data
     users[socket.id] = {}; // Use an empty object to represent each user
@@ -67,14 +87,6 @@ io.on("connection", (socket) => {
         });
     });
 
-    socket.on("userNameAdded", (data) => {
-        users[socket.id].name = data.name;
-        
-        socket.broadcast.emit('addUserListing', {
-            id: socket.id,
-            name: data.name
-        });
-    });
 
 
 }); 
