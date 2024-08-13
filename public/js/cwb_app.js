@@ -25,6 +25,19 @@ const users = {}; // Store other mice positions
 context.lineJoin = "round";
 context.lineCap = "round";
 
+document.addEventListener('DOMContentLoaded', function () {
+    // Prompt the user for their name
+    let userName = prompt("Please enter your name:");
+    // Set a default name if no input is given
+    if (!userName || userName.trim() === "") {
+        userName = "Guest";
+    }
+
+    // Emit user name to server
+    socket.emit('userNameAdded', { name: userName });
+
+});
+
 function updateBrushSize() { 
     brushSize = parseInt(brushSizePicker.value, 10); //Set brushSize to the value set in html for each brush option select
     console.log("brush size is now" + brushSize)
@@ -32,11 +45,10 @@ function updateBrushSize() {
 
 
 function enableEraseMode() {
-    console.log("CLICKED ERASER")
     console.log(isErasing);
     if (!isErasing) {
         lastBrushWidth = brushSize
-        context.lineWidth = 30;
+        brushSize = 20;
         lastBrushColor = brushColor.value;
         brushColor.value = '#FFFFFF';  // Use 'white' directly
         eraseBtn.style.borderColor = 'green';  // Use 'green' directly
@@ -57,6 +69,11 @@ canvas.addEventListener('mousedown', (e) => {     // When mouse clicked over the
         socket.emit("clear");
 
     } else if (e.button === 0) { // Left-click
+
+        //Set drawing aesthetics
+        context.strokeStyle = brushColor.value;
+        context.lineWidth = brushSize;
+
         isDrawing = true;
         [lastX, lastY] = [e.offsetX, e.offsetY];
 
@@ -93,11 +110,6 @@ canvas.addEventListener('mousemove', (e) => {
     });
 
     if(!isDrawing) return; // Only draw if mouse is down
-
-    //Set drawing aesthetics
-    context.strokeStyle = brushColor.value;
-    context.lineWidth = brushSize;
-  
 
   
     // Draw lines on own whiteboard
@@ -165,8 +177,8 @@ socket.on('mouseUpdate', (data) => {
     const mouseElement = users[data.id];
 
     if(mouseElement) {
-        mouseElement.style.left = `${data.x + 171}px`; // Set clone mouse positions and fix offset
-        mouseElement.style.top = `${data.y + 110}px`; 
+        mouseElement.style.left = `${data.x + 282}px`; // Set clone mouse positions and fix offset
+        mouseElement.style.top = `${data.y + 112}px`; 
     }
 
 });
@@ -201,4 +213,17 @@ socket.on('userDisconnected', (data) => {
         mouseElement.remove();
         delete users[data.id];
     }
+
+    // Delete users name lsiting
+});
+
+socket.on("addUserListing", (data) => {
+    userID = data.id;
+    userName = data.name;
+
+    console.log("tried to add user listing");
+    //Add user listing element
+    const userListing = document.createElement('div');
+    userListing.textContent = userName;
+    document.getElementById("users-container").appendChild(userListing);
 });

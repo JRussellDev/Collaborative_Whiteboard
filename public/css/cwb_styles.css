@@ -5,36 +5,50 @@
 }
 
 body {
-    background-color: rgb(231, 236, 230); /* Fallback color */
+    background-color: rgb(231, 236, 230);
     background-image: url('../images/backgroundIMG.jpg');
-    background-size: cover; /* Ensures the image covers the entire background */
-    background-position: center; /* Centers the image in the viewport */
-    background-repeat: no-repeat; /* Prevents the image from repeating */
-    background-attachment: fixed; /* Makes the background image fixed in place */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     margin: 0;
     padding: 0;
     overflow: hidden;
 }
+
+/* Content Box: Two-column grid */
+#content-box {
+    display: flex;
+    flex-direction: column;
+    margin: 20px auto;
+}
+
+
+/* Header Section */
 #heading-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 20px 0 0 0;
     background-color: hsl(190, 4%, 33%);
-    max-width: 1600px;
-    margin: 20px auto 0px;
     height: 80px;
     box-shadow: #474747;
     border: 2px solid #000000;
+
 }
 
 .left-heading {
-    flex: 1; /* Allow this section to take up as much space as it can */
+    flex: 1;
+    color: white;
+    margin-left: 30px;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 .center-heading {
     text-align: center;
-    flex: 3; /* Make this section larger to center the content */
+    flex: 3;
+    color: #d3d3d3;
+    font-size: 1.5em;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 .right-heading {
@@ -51,96 +65,95 @@ body {
     color: #d3d3d3;
 }
 
-#container {
-    max-width: 1600px;
-    margin: 0 auto;
-    margin-top: 0px;
-    padding: 0px;
-    position: relative;
-    
+/* Main Content Section: Two-column grid for users and canvas */
+#main-content {
+    display: grid;
+    grid-template-columns: 250px 1fr; /* Left column for users, right column for canvas */
+    gap: 20px; /* Space between columns */
+    justify-content: left;
 }
 
-h1 {
-    font-size: 3em;
-    color: #e2e2e2;
+/* Users Container: List of users */
+#users-container {
+    margin-left: 15px;
+    background-color: hsl(190, 4%, 33%);
+    padding: 10px;
+    border-radius: 5px;
+    max-height: 950px; /* Set the height to match the canvas */
+    overflow-y: auto; /* Allows scrolling if user list is long */
+}
+
+.userItem {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 10px;
     text-align: center;
-    margin-bottom: 20px;
     font-family: 'Courier New', Courier, monospace;
 }
 
-#userCountDisplay {
-    margin-left: 5px;
-    color: #fff;
-}
-
-p {
-    line-height: 1.6;
-    color: #ff9a3c;
-    margin-bottom: 20px;
+/* Canvas and Toolbar Container */
+#canvas-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
 }
 
 canvas {
     display: block;
-    /*width: 100%;
-    height: 720px;*/
     border: 3px solid #474747;
     background-color: white;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3); 
-    box-sizing: border-box;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
     margin: 0;
     padding: 0;
+
 }
 
 #toolbar {
     height: 60px;
     display: flex;
     margin-top: 5px;
-    text-align: center;
     justify-content: left;
-    align-items: center; /* Vertically center the items */
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3); 
+    align-items: center;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
     background-color: #fcfdff54;
     border: 1px solid #474747;
+    width: 1594px;
+}
+
+.tool-group {
+    display: flex;
+    align-items: center;
+    margin-right: 30px;
+    margin-left: 30px;
 }
 
 #toolbar select {
-    background-color: #007bff; /* Sets the button background color to a blue shade */
-    color: #fff; /* Sets the text color of the button to white */
-    border: none; /* Removes the default border */
-    padding: 10px 20px; /* Adds 10 pixels of padding on top and bottom, 20 pixels on left and right */
-    margin-right: 35px; /* Adds 5 pixels of space around each button */
-    font-size: 16px; /* Sets the font size to 16 pixels */
-    cursor: pointer; /* Changes the cursor to a pointer when hovering over the button */
-    border-radius: 5px; /* Rounds the corners of the button with a 5-pixel radius */
-    transition: background-color 0.3s; /* Adds a smooth transition effect for background color changes */
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 10px;
+    margin-right: 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
 }
 
-.tool-group label  {
-    font-family: 'Courier New', Courier, monospace;
-    margin-bottom: 5px;
-    margin-right: 5px;
-    margin-left: 7px;
-    font-size: 1em;
-
+#toolbar button {
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    margin-left: 50px;
+    height: 40px;
+    width: 78px;
+    border-width: 5px;
 }
 
 #toolbar button:hover {
-    background-color: #91c6ff; /* Changes the background color to a darker blue on hover */
-}
-
-.draw-button {
-    height: 50px;
-}
-
-.eraser-button{
-    height: 50px;
-}
-
-/* Styling for the footer */
-footer {
-    text-align: center; /* Centers the text inside the footer */
-    margin-top: 40px; /* Adds 40 pixels of space above the footer */
-    color: #999; /* Sets the text color to a light gray */
+    background-color: #91c6ff;
 }
 
 .mouse-icon {

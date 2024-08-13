@@ -21,6 +21,7 @@ app.get('/', (req, res) => {
 io.on("connection", (socket) => {
     console.log("User has connected");
 
+
     userCount++; // Increment user count
     users[socket.id] = {};
     io.emit("userConnected", { id: socket.id, userCount: userCount });
@@ -33,6 +34,7 @@ io.on("connection", (socket) => {
 
     // Store user data
     users[socket.id] = {}; // Use an empty object to represent each user
+
 
     //listen for user drawing
     socket.on("draw", (data) => {
@@ -62,6 +64,15 @@ io.on("connection", (socket) => {
             id: socket.id,
             x: data.x,
             y: data.y
+        });
+    });
+
+    socket.on("userNameAdded", (data) => {
+        users[socket.id].name = data.name;
+        
+        socket.broadcast.emit('addUserListing', {
+            id: socket.id,
+            name: data.name
         });
     });
 
