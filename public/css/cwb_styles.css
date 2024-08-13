@@ -16,12 +16,6 @@ body {
     overflow: hidden;
 }
 
-/* Content Box: Two-column grid */
-#content-box {
-    display: flex;
-    flex-direction: column;
-    margin: 20px auto;
-}
 
 
 /* Header Section */
@@ -46,7 +40,7 @@ body {
 .center-heading {
     text-align: center;
     flex: 3;
-    color: #d3d3d3;
+    color: #ffffff;
     font-size: 1.5em;
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
@@ -65,22 +59,31 @@ body {
     color: #d3d3d3;
 }
 
-/* Main Content Section: Two-column grid for users and canvas */
-#main-content {
-    display: grid;
-    grid-template-columns: 250px 1fr; /* Left column for users, right column for canvas */
-    gap: 20px; /* Space between columns */
-    justify-content: left;
+/* Content Box: Two-column grid */
+#content-box {
+    display: flex;
+    flex-direction: column;
+    margin: 20px auto;
 }
 
 /* Users Container: List of users */
 #users-container {
     margin-left: 15px;
     background-color: hsl(190, 4%, 33%);
-    padding: 10px;
     border-radius: 5px;
     max-height: 950px; /* Set the height to match the canvas */
     overflow-y: auto; /* Allows scrolling if user list is long */
+
+}
+
+#users-container h2 {
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    margin-bottom: 10px;
+    background-color: #91c6ff;
+    text-align: center;
+    display: block;
+    padding: 5px;
+    border-radius: 5px;
 }
 
 .userItem {
@@ -92,6 +95,15 @@ body {
     text-align: center;
     font-family: 'Courier New', Courier, monospace;
 }
+
+/* Main Content Section: Two-column grid for users and canvas */
+#main-content {
+    display: grid;
+    grid-template-columns: 250px 1fr; /* Left column for users, right column for canvas */
+    gap: 20px; /* Space between columns */
+    justify-content: left;
+}
+
 
 /* Canvas and Toolbar Container */
 #canvas-container {
