@@ -5,8 +5,7 @@
 }
 
 body {
-    background-color: rgb(231, 236, 230);
-    background-image: url('../images/backgroundIMG.jpg');
+    background-color:#345995;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -23,16 +22,20 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: hsl(190, 4%, 33%);
+    background-color:#75B9BE;
     height: 80px;
-    box-shadow: #474747;
-    border: 2px solid #000000;
+    border: 1px solid #000000;
+    width: 1700px;
+    margin-left: 160px;
+    margin-top: 10px;
+    border-radius: 12px;
+
 
 }
 
 .left-heading {
     flex: 1;
-    color: white;
+    color: rgb(255, 255, 255);
     margin-left: 30px;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
@@ -40,7 +43,7 @@ body {
 .center-heading {
     text-align: center;
     flex: 3;
-    color: #ffffff;
+    color: #3b3b3b;
     font-size: 1.5em;
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
@@ -53,11 +56,6 @@ body {
     margin: 0;
 }
 
-#heading-container .by-text {
-    margin-left: 10px;
-    font-size: 1em;
-    color: #d3d3d3;
-}
 
 /* Content Box: Two-column grid */
 #content-box {
@@ -69,10 +67,11 @@ body {
 /* Users Container: List of users */
 #users-container {
     margin-left: 15px;
-    background-color: hsl(190, 4%, 33%);
+    background-color:#75B9BE;
+    border-style: solid;
     border-radius: 5px;
-    border-width: 5px;
-    border-color: #000000;
+    border-width: 2px;
+    border-color:#474747;
     max-height: 950px; /* Set the height to match the canvas */
     overflow-y: auto; /* Allows scrolling if user list is long */
 
@@ -80,19 +79,19 @@ body {
 
 #users-container h2 {
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: #3b3b3b;
     margin-bottom: 10px;
-    background-color: #91c6ff;
+    background-color: #F5E0B7;
     text-align: center;
     display: block;
-    padding: 5px;
+    padding: 8px;
     border-radius: 5px;
 }
 
 .userItem {
-    background-color: #007bff;
-    color: white;
+    background-color: #75baf375;
+    color: rgb(27, 27, 27);
     padding: 10px;
-    border-radius: 5px;
     margin-bottom: 10px;
     text-align: center;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
@@ -132,9 +131,9 @@ canvas {
     justify-content: left;
     align-items: center;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
-    background-color: #fcfdff54;
+    background-color:#75B9BE;
     border: 1px solid #474747;
-    width: 1594px;
+    width: 1600px;
 }
 
 #toolbar label {
@@ -146,7 +145,7 @@ canvas {
     display: flex;
     align-items: center;
     margin-right: 30px;
-    margin-left: 15px;
+    margin-left: 30px;
 }
 
 
@@ -163,6 +162,7 @@ canvas {
     transition: background-color 0.3s;
 }
 
+
 #toolbar button {
     background-color: #007bff;
     color: white;
@@ -171,6 +171,10 @@ canvas {
     height: 40px;
     width: 78px;
     border-width: 5px;
+}
+
+#color-label {
+    margin-left: 90px;
 }
 
 #toolbar button:hover {
