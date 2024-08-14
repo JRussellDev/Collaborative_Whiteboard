@@ -71,6 +71,8 @@ body {
     margin-left: 15px;
     background-color: hsl(190, 4%, 33%);
     border-radius: 5px;
+    border-width: 5px;
+    border-color: #000000;
     max-height: 950px; /* Set the height to match the canvas */
     overflow-y: auto; /* Allows scrolling if user list is long */
 
@@ -93,7 +95,7 @@ body {
     border-radius: 5px;
     margin-bottom: 10px;
     text-align: center;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 /* Main Content Section: Two-column grid for users and canvas */
@@ -135,12 +137,19 @@ canvas {
     width: 1594px;
 }
 
+#toolbar label {
+    margin-right: 5px;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
 .tool-group {
     display: flex;
     align-items: center;
     margin-right: 30px;
-    margin-left: 30px;
+    margin-left: 15px;
 }
+
+
 
 #toolbar select {
     background-color: #007bff;
