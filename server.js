@@ -13,6 +13,22 @@ const io = socketIo(server);
 let userCount = 0; // Initialize the user count
 const users = {};
 
+let drawingCommands = [
+{
+    type: 'draw',
+    startX: 0,
+    startY: 0,
+    endX: 0,
+    endY: 0,
+    color: '#FFFFFF',
+    brushSize: 0
+},
+{
+    type: "clear",
+}
+];
+
+
 // User public directory for app data
 app.use(express.static("public"));
 
@@ -26,6 +42,9 @@ app.get('/', (req, res) => {
 io.on("connection", (socket) => {
     
     console.log("User has connected");
+
+    socket.emit('loadExistingDrawings', drawingCommands); // LOAD EXISTING DRAWINGS 
+
     userCount++; // Increment user count
 
     users[socket.id] = {}; // Save/set the new users socket id in list of users
@@ -36,8 +55,10 @@ io.on("connection", (socket) => {
     // For each user if the id of a user does not match THIS sockets id
     for (let id in users){
         if (id !== socket.id){
+           
             // ALL existing mice
-            socket.emit("userConnected", { id, userCount: userCount });
+            socket.emit("userConnected", { id, userCount: userCount }); // Also pass through data of all drawing coordinates up until this point
+           
             // ALL existing user names to add to list
             socket.emit("addUserListing", {
                 id: id,
@@ -62,6 +83,18 @@ io.on("connection", (socket) => {
     //listen for user drawing
     socket.on("draw", (data) => {
         socket.broadcast.emit("draw", data) // Give the drawing coords that should be drawn for all other users TO all other users
+
+        
+        drawingCommands.push({
+            type: 'draw',
+            startX: data.x0,
+            startY: data.y0,
+            endX: data.x1,
+            endY: data.y1,
+            color: data.color,
+            brushSize: data.size
+        });
+
     });
 
 
@@ -69,6 +102,9 @@ io.on("connection", (socket) => {
     //listen for user clearing whiteboard
     socket.on("clear", () => {
     socket.broadcast.emit("clear")
+
+    drawingCommands = []; // Clear the saved commands array
+
     });
 
 
@@ -92,6 +128,14 @@ io.on("connection", (socket) => {
         
         // Remove user data
         delete users[socket.id];
+
+        // if there are no users clear the board
+        if (userCount <= 0)
+        {
+            drawingCommands = []; // Clear the saved commands array
+        }
+        
+
     });
 
 }); 

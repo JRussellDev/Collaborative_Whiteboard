@@ -46,14 +46,14 @@ function enableEraseMode() {
     if (!isErasing) {
         lastBrushWidth = brushSize
         brushSize = 20;
-        lastBrushColor = brushColor.value;
+        lastBrushColour = brushColor.value;
         brushColor.value = '#FFFFFF';  // Use 'white' directly
         eraseBtn.style.borderColor = 'green';  // Use 'green' directly
         isErasing = true;
     } else {
         isErasing = false;
         brushSize = lastBrushWidth;
-        brushColor.value = lastBrushColor;
+        brushColor.value = lastBrushColour;
         eraseBtn.style.borderColor = 'black';  // Use 'black' directly
     }
 }
@@ -184,6 +184,7 @@ socket.on('draw', (data) => {
     context.moveTo(data.x0, data.y0); // Find starting point (using clients last mouse position)
     context.lineTo(data.x1, data.y1); // Draw towards new client mouse position
     context.stroke();
+
 });
 
 socket.on('mouseUpdate', (data) => {
@@ -250,3 +251,20 @@ socket.on('userDisconnected', (data) => {
     }
 });
 
+socket.on('loadExistingDrawings', (drawingCommands) => {
+
+    drawingCommands.forEach(command => {
+        const { type, startX, startY, endX, endY, color, brushSize } = command;
+
+        if (type === 'draw') {
+            context.strokeStyle = color;
+            context.lineWidth = brushSize;
+            context.beginPath();
+            context.moveTo(startX, startY);
+            context.lineTo(endX, endY);
+            context.stroke();
+            context.closePath();
+        }
+
+    });
+});
