@@ -1,42 +1,39 @@
 // Connect to the Socket.IO server
 const socket = io();
 
+
+// HTML references
 const canvas = document.getElementById("whiteboard");
 const context = canvas.getContext("2d");
-
-const eraseBtn = document.getElementById("erase-button");
-
-let brushColor = document.getElementById("colorPicker");
-brushColor.value = '#000000';
-const brushSizePicker = document.getElementById("brushSize")
 canvas.width = canvas.clientWidth;  // Set the drawing width to match the display width
 canvas.height = 660;  // Set the drawing height
 
+const brushSizePicker = document.getElementById("brushSize")
+
+const brushColor = document.getElementById("colorPicker");
+brushColor.value = '#000000'; // Initialize brush colour default as black
+
+const eraseBtn = document.getElementById("erase-button");
+
+
+
+// Variable creation
 let isDrawing = false; // Bool to check if user is drawing/able to draw
+let isErasing = false;
+
 let lastX = 0;
 let lastY = 0;
 let brushSize = 2;
 
-let isErasing = false;
 let lastBrushColour;
 let lastBrushWidth;
+
 const users = {}; // Store other mice positions
 
+// Brush setup
 context.lineJoin = "round";
 context.lineCap = "round";
 
-document.addEventListener('DOMContentLoaded', function () {
-    // Prompt the user for their name
-    let userName = prompt("Please enter your name:");
-    // Set a default name if no input is given
-    if (!userName || userName.trim() === "") {
-        userName = "Guest";
-    }
-
-    // Emit user name to server
-    socket.emit('userNameAdded', { name: userName });
-
-});
 
 function updateBrushSize() { 
     brushSize = parseInt(brushSizePicker.value, 10); //Set brushSize to the value set in html for each brush option select
@@ -49,18 +46,19 @@ function enableEraseMode() {
     if (!isErasing) {
         lastBrushWidth = brushSize
         brushSize = 20;
-        lastBrushColor = brushColor.value;
+        lastBrushColour = brushColor.value;
         brushColor.value = '#FFFFFF';  // Use 'white' directly
         eraseBtn.style.borderColor = 'green';  // Use 'green' directly
         isErasing = true;
     } else {
         isErasing = false;
         brushSize = lastBrushWidth;
-        brushColor.value = lastBrushColor;
+        brushColor.value = lastBrushColour;
         eraseBtn.style.borderColor = 'black';  // Use 'black' directly
     }
 }
 
+// CANVAS LISTENING
 canvas.addEventListener('mousedown', (e) => {     // When mouse clicked over the canvas....
     
     if (e.button === 2) { // Right-click
@@ -137,19 +135,42 @@ canvas.addEventListener('mousemove', (e) => {
     console.log("Should be drawing");
 });
 
+canvas.addEventListener("mouseup", () => isDrawing = false); // When mouse is lifted, stop ability to draw
+
+canvas.addEventListener("mouseout", () => isDrawing = false); // When mouse leaves the canvas, stop ability to draw
+
+canvas.addEventListener('contextmenu', (e) => e.preventDefault()); // Prevent the context menu from appearing when right clicking
+
+
+// TOOLBAR LISTENING
+window.onload = function() { // Wait for site to fully load
+    let userName = prompt("Please enter your name:");
+    // Set a default name if no input is given
+    if (!userName || userName.trim() === "") {
+        userName = "Guest";
+    }
+
+    // Emit user name to server
+    socket.emit('userNameAdded', { name: userName });
+};
+
+brushColor.addEventListener('input', () => {
+    if(isErasing)
+        {
+            isErasing = false;
+            brushSize = lastBrushWidth;
+            eraseBtn.style.borderColor = 'black';  // Use 'black' directly
+        }
+});
 
 brushSizePicker.addEventListener('change', updateBrushSize); // When changing brush sizes, run update brush function
 
+eraseBtn.addEventListener("click", enableEraseMode); // Run eraser function when eraser button clicked
+   
 
-canvas.addEventListener("mouseup", () => isDrawing = false); // When mouse is lifted, stop ability to draw
-canvas.addEventListener("mouseout", () => isDrawing = false); // When mouse leaves the canvas, stop ability to draw
-
-eraseBtn.addEventListener("click", enableEraseMode);
-
-// Prevent the context menu from appearing when right clicking
-canvas.addEventListener('contextmenu', (e) => e.preventDefault());
-
-
+socket.on("clear", () => { // When emitted "clear" function through server
+    context.clearRect(0, 0, canvas.width, canvas.height); // clear the canvas
+});
 
 // Listen for drawing data from other clients
 socket.on('draw', (data) => {
@@ -163,14 +184,8 @@ socket.on('draw', (data) => {
     context.moveTo(data.x0, data.y0); // Find starting point (using clients last mouse position)
     context.lineTo(data.x1, data.y1); // Draw towards new client mouse position
     context.stroke();
+
 });
-
-
-socket.on("clear", () => { // When emitted "clear" function through server
-    context.clearRect(0, 0, canvas.width, canvas.height); // clear the canvas
-});
-
-
 
 socket.on('mouseUpdate', (data) => {
 
@@ -183,6 +198,20 @@ socket.on('mouseUpdate', (data) => {
 
 });
 
+ // Listen for user listing updates
+ socket.on("addUserListing", (data) => {
+    const { id, name } = data;
+    console.log('Received user listing:', data);
+        // Add or update user name in the list
+        let userItem = document.getElementById(`user-${id}`);
+        if (!userItem) {
+            userItem = document.createElement("div");
+            userItem.className = "userItem";
+            userItem.id = `user-${id}`;
+            document.getElementById("users-container").appendChild(userItem);
+        }
+        userItem.textContent = name;
+});
 
 socket.on('userConnected', (data) => {
     const {id, userCount } = data;
@@ -222,18 +251,20 @@ socket.on('userDisconnected', (data) => {
     }
 });
 
+socket.on('loadExistingDrawings', (drawingCommands) => {
 
- // Listen for user listing updates
- socket.on("addUserListing", (data) => {
-    const { id, name } = data;
-    console.log('Received user listing:', data);
-        // Add or update user name in the list
-        let userItem = document.getElementById(`user-${id}`);
-        if (!userItem) {
-            userItem = document.createElement("div");
-            userItem.className = "userItem";
-            userItem.id = `user-${id}`;
-            document.getElementById("users-container").appendChild(userItem);
+    drawingCommands.forEach(command => {
+        const { type, startX, startY, endX, endY, color, brushSize } = command;
+
+        if (type === 'draw') {
+            context.strokeStyle = color;
+            context.lineWidth = brushSize;
+            context.beginPath();
+            context.moveTo(startX, startY);
+            context.lineTo(endX, endY);
+            context.stroke();
+            context.closePath();
         }
-        userItem.textContent = name;
+
+    });
 });
